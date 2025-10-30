@@ -49,14 +49,12 @@ class QueryPlanManager():
         return json.dumps(plan, indent=4)
 
     def fetch_or_generate_query_plan(self, sql_query) -> dict:
-        # ✅ FIXED: ensure parsing/normalization is consistent
         parsed_and_splitted_queries = self.parser_and_normalizer.parse_and_extract(sql_query)
 
         normalized_queries = []
         for sub_query in parsed_and_splitted_queries:
             normalized_form = self.parser_and_normalizer.replace_literals_and_inner_selects(sub_query)
 
-            # ✅ FIXED: unify normalized form for IN (?, ?, ?) to IN (?)
             normalized_form = re.sub(
                 r"\bIN\s*\(\s*(?:\?\s*,\s*)+\?\s*\)",
                 "IN ( ? )",
@@ -70,7 +68,6 @@ class QueryPlanManager():
         for normalized_query in normalized_queries:
             self.cache_metrics["requests"] += 1
 
-            # ✅ FIXED: use normalized_query (not normalized_form from outer scope)
             if normalized_query in self.query_cache and self.flag:
                 self.cache_metrics["hits"] += 1
                 execution_plan[normalized_query] = self.query_cache[normalized_query]
@@ -81,36 +78,31 @@ class QueryPlanManager():
                 execution_plan[normalized_query] = new_plan
                 self.total_complexity_score += self.estimate_query_complexity(normalized_query)
 
-        # ✅ FIXED: ensure deep copy before clearing literals
         literals = copy.deepcopy(self.parser_and_normalizer.literals_list)
         self.parser_and_normalizer.literals_list.clear()
 
         return execution_plan, literals
 
 
-# ---------------- Test Driver ---------------- #
-query1 = """SELECT name FROM users
-WHERE dept_id IN (
-    SELECT id FROM department
-    WHERE manager_id IN (
-        SELECT id FROM managers WHERE salary > 50000
-    )
-);"""
+if __name__ == "__main__" : 
+    # ---------------- Test Driver ---------------- #
+    query1 = """SELECT name FROM users
+    WHERE dept_id IN (1,2,3)"""
 
-query2 = """SELECT id FROM managers WHERE salary > 50000"""
+    query2 = """SELECT name FROM users
+    WHERE dept_id IN (SELECT ids FROM admin WHERE pf > 30000) """
 
-query_plan_manager = QueryPlanManager()
+    query_plan_manager = QueryPlanManager()
+    plan1, literals1 = query_plan_manager.fetch_or_generate_query_plan(query1)
+    print("Query:", query1, "\nexecuting with plan:")
+    print(plan1)
+    print("Associated Literals:", literals1)
+    print("=" * 100)
 
-plan1, literals1 = query_plan_manager.fetch_or_generate_query_plan(query1)
-print("Query:", query1, "\nexecuting with plan:")
-print(plan1)
-print("Associated Literals:", literals1)
-print("=" * 100)
+    plan2, literals2 = query_plan_manager.fetch_or_generate_query_plan(query2)
+    print("Query:", query2, "\nexecuting with plan:")
+    print(plan2)
+    print("Associated Literals:", literals2)
+    print("=" * 100)
 
-plan2, literals2 = query_plan_manager.fetch_or_generate_query_plan(query2)
-print("Query:", query2, "\nexecuting with plan:")
-print(plan2)
-print("Associated Literals:", literals2)
-print("=" * 100)
-
-print("Cache Metrics:", query_plan_manager.cache_metrics)
+    print("Cache Metrics:", query_plan_manager.cache_metrics)

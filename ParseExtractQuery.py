@@ -31,13 +31,13 @@ class ParseNormalizeQuery():
             if hasattr(node, "getRuleIndex"):
                 rule = parser.ruleNames[node.getRuleIndex()]
 
-                # ✅ Replace literal values
+                # Replace literal values
                 if rule == "literal_value":
                     self.literals_list.append(node.getText())
                     replace_node_with_placeholder(node)
                     return
 
-                # ✅ Replace quoted any_name (string identifiers)
+                # Replace quoted any_name (string identifiers)
                 if rule == "any_name":
                     text = node.getText()
                     if text.startswith('"') and text.endswith('"'):
@@ -45,7 +45,7 @@ class ParseNormalizeQuery():
                         replace_node_with_placeholder(node)
                         return
 
-                # ✅ Replace only inner SELECTs (not outermost)
+                # Replace only inner SELECTs (not outermost)
                 if rule == "select_core":
                     if flag:
                         flag = False
@@ -53,13 +53,12 @@ class ParseNormalizeQuery():
                         replace_node_with_placeholder(node)
                         return
 
-            # ✅ Recursive traversal
+            # Recursive traversal
             for i in range(node.getChildCount()):
                 traverse(node.getChild(i))
 
         traverse(tree)
 
-        # ✅ FIXED: Ignore EOF tokens properly
         final_sql = " ".join(
             t.text for t in token_stream.tokens
             if t.text.strip() != "" and t.type != parser.EOF
@@ -74,7 +73,7 @@ class ParseNormalizeQuery():
         sql_text = " ".join(t.text for t in tokens if t.text.strip() != "")
         return sql_text
 
-    def extract_select_blocks(self, node, parser, token_stream, results, depth=0):
+    def extract_select_blocks(self, node, parser, token_stream, results):
         if hasattr(node, "getRuleIndex"):
             rule = parser.ruleNames[node.getRuleIndex()]
             if rule == "select_core":
@@ -82,7 +81,7 @@ class ParseNormalizeQuery():
                 results.append(sql_text)
 
         for i in range(node.getChildCount()):
-            self.extract_select_blocks(node.getChild(i), parser, token_stream, results, depth + 1)
+            self.extract_select_blocks(node.getChild(i), parser, token_stream, results)
 
     def parse_and_extract(self, sql_query):
         input_stream = InputStream(sql_query)

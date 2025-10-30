@@ -155,27 +155,27 @@ def test_query_plan_cache(use_cache: bool):
     planner = QueryPlanManager()
     planner.flag = use_cache
 
-    print("\n🚀 Starting Cache Simulation Test\n")
+    print(" Starting Cache Simulation Test\n")
     start_time = time.perf_counter()
 
     for idx, query in enumerate(test_queries, start=1):
-        print(f"\n🔹 Query {idx}:")
+        print(f" Query {idx}:")
         print(query.strip())
 
         plans, literals = planner.fetch_or_generate_query_plan(query)
 
-        print(f"📋 Cache Metrics: {planner.cache_metrics}")
-        print(f"📦 Literals Extracted: {literals}")
+        print(f" Cache Metrics: {planner.cache_metrics}")
+        print(f" Literals Extracted: {literals}")
         for nq, plan in plans.items():
-            print(f"🧩 Normalized Query:\n{nq}")
-            print(f"🗺️  Plan:\n{plan}")
+            print(f" Normalized Query:\n{nq}")
+            print(f"  Plan:\n{plan}")
         print("=" * 50)
 
     total_complexity = planner.total_complexity_score
     score_generated = total_complexity or 0
     print("\n------------------------------------------")
-    print("✅ Test Completed")
-    print(f"📊 Final Cache Metrics: {planner.cache_metrics}")
+    print(" Test Completed")
+    print(f" Final Cache Metrics: {planner.cache_metrics}")
     print("Total Complexity score generated is", score_generated)
     scores.append(score_generated)
     print("------------------------------------------\n")
@@ -194,7 +194,7 @@ def test_query_plan_cache(use_cache: bool):
 # 🧩 Summary Report Function
 # ===============================
 def print_performance_report(results_with_cache, results_without_cache):
-    print("\n\n📊 FINAL PERFORMANCE COMPARISON MATRIX")
+    print(" FINAL PERFORMANCE COMPARISON MATRIX")
     print("=========================================\n")
 
     data = {
@@ -206,7 +206,6 @@ def print_performance_report(results_with_cache, results_without_cache):
             "Total Complexity Score",
             "Total Time (s)",
             "Avg Time per Query (ms)",
-            "Performance Speed-up (×)",
         ],
         "Without Cache": [
             results_without_cache["requests"],
@@ -216,7 +215,6 @@ def print_performance_report(results_with_cache, results_without_cache):
             results_without_cache["total_complexity"],
             f"{results_without_cache['total_time']:.2f}",
             f"{(results_without_cache['total_time'] / results_without_cache['requests']) * 1000:.2f}",
-            "—",
         ],
         "With Cache": [
             results_with_cache["requests"],
@@ -228,13 +226,12 @@ def print_performance_report(results_with_cache, results_without_cache):
             results_with_cache["total_complexity"],
             f"{results_with_cache['total_time']:.2f}",
             f"{(results_with_cache['total_time'] / results_with_cache['requests']) * 1000:.2f}",
-            f"{results_without_cache['total_time'] / max(results_with_cache['total_time'], 1e-9):.2f}",
         ],
     }
 
     df = pd.DataFrame(data)
     print(df.to_string(index=False))
-    print("\n✅ Observation: Caching significantly reduces total execution time while maintaining the same workload.\n")
+    print("\n Observation: Caching significantly reduces total execution time while maintaining the same workload.\n")
 
 
 # ===============================
@@ -249,7 +246,7 @@ if __name__ == "__main__":
     def fake_generate_plan(self, query: str):
         complexity = self.estimate_query_complexity(query)
         delay = 0.05 * complexity  # 50 ms per complexity unit
-        print(f"🕒 Simulating planning delay: {delay:.2f}s for complexity {complexity}")
+        print(f" Simulating planning delay: {delay:.2f}s for complexity {complexity}")
         time.sleep(delay)
         return _real_generate_plan(self, query)
 
