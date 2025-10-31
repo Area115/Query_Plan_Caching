@@ -296,7 +296,7 @@ SELECT * FROM orders WHERE customer_id IN ( ? )
 <br>
 
 **End to End flow of input query from Parsing --> Normalization --> Plan :** 
-![Alt text]()
+![Alt text](https://github.com/Area115/Query_Plan_Caching/blob/0261d4b4b69ab0e1a2cf6816ef2fb3dfe953c760/images/functional_diagram.png)
 
 <br> 
 
