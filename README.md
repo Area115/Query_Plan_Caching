@@ -293,6 +293,14 @@ SELECT * FROM orders WHERE customer_id IN ( ? )
 **Cache Metrics**: Track the performance of the caching system by counting total requests, cache hits, and cache misses to measure overall efficiency and reuse effectiveness.
 
 ***
+<br>
+
+**End to End flow of input query from Parsing --> Normalization --> Plan :** 
+![Alt text]()
+
+<br> 
+
+*** 
 
 **Mock Plan Generation**
 
