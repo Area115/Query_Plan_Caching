@@ -64,15 +64,24 @@ class QueryPlanManager():
 
             normalized_queries.append(normalized_form)
 
+        cache_matrics_for_current_input = {
+            "requests": 0,
+            "hits": 0,
+            "misses": 0,
+        }
+
         execution_plan = {}
         for normalized_query in normalized_queries:
+            cache_matrics_for_current_input["requests"] += 1
             self.cache_metrics["requests"] += 1
 
             if normalized_query in self.query_cache and self.flag:
                 self.cache_metrics["hits"] += 1
+                cache_matrics_for_current_input["hits"] += 1
                 execution_plan[normalized_query] = self.query_cache[normalized_query]
             else:
                 self.cache_metrics["misses"] += 1
+                cache_matrics_for_current_input["misses"] += 1
                 new_plan = self.generate_dummy_plan(normalized_query)
                 self.query_cache[normalized_query] = new_plan
                 execution_plan[normalized_query] = new_plan
@@ -81,7 +90,7 @@ class QueryPlanManager():
         literals = copy.deepcopy(self.parser_and_normalizer.literals_list)
         self.parser_and_normalizer.literals_list.clear()
 
-        return execution_plan, literals
+        return execution_plan, literals , cache_matrics_for_current_input
 
 
 if __name__ == "__main__" : 
@@ -93,16 +102,18 @@ if __name__ == "__main__" :
     WHERE dept_id IN (SELECT ids FROM admin WHERE pf > 30000) """
 
     query_plan_manager = QueryPlanManager()
-    plan1, literals1 = query_plan_manager.fetch_or_generate_query_plan(query1)
+    plan1, literals1 , cache_matrics_for_current_input = query_plan_manager.fetch_or_generate_query_plan(query1)
     print("Query:", query1, "\nexecuting with plan:")
     print(plan1)
     print("Associated Literals:", literals1)
+    print("cache_matrics_for_current_input" , cache_matrics_for_current_input)
     print("=" * 100)
 
-    plan2, literals2 = query_plan_manager.fetch_or_generate_query_plan(query2)
+    plan2, literals2 , cache_matrics_for_current_input = query_plan_manager.fetch_or_generate_query_plan(query2)
     print("Query:", query2, "\nexecuting with plan:")
     print(plan2)
     print("Associated Literals:", literals2)
+    print("cache_matrics_for_current_input" , cache_matrics_for_current_input)
     print("=" * 100)
 
     print("Cache Metrics:", query_plan_manager.cache_metrics)

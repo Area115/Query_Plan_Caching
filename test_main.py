@@ -162,9 +162,10 @@ def test_query_plan_cache(use_cache: bool):
         print(f" Query {idx}:")
         print(query.strip())
 
-        plans, literals = planner.fetch_or_generate_query_plan(query)
+        plans, literals  , cache_metrics = planner.fetch_or_generate_query_plan(query)
 
-        print(f" Cache Metrics: {planner.cache_metrics}")
+        print(f"Global Cache Metrics: {planner.cache_metrics}")
+        print("Cache metrics for Given Query : " , cache_metrics )
         print(f" Literals Extracted: {literals}")
         for nq, plan in plans.items():
             print(f" Normalized Query:\n{nq}")
