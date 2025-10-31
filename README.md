@@ -438,18 +438,23 @@ run command : python -u "d:\query_plan_cache\test_main.py" > .\output.txt
 <br>
 
 **AI Tools Used in Development**
-
-This project was developed with assistance from AI tools in the following areas:
-
-**Code Generation and Architecture :**
-1. AI help is taken to understand ANTLR tree structure and its traversal methods.
-2. **Boilerplate Codes:**  Generated code for Mock plan generation , monkey patch , simulating complexity score and manage corner cases specially for nested sub-queries normalization.
-3. **Test Plan :**  AI helped to generate testing queries along with a testing plan. Performance difference between with and without cache.
 <br>
 
-**Documentation :**
-1. Architecture Documentation : AI helped to create architecture documentation.
-2. **README sections:** Assisted in organizing and writing comprehensive setup instructions along with creation of architecture diagram.
+This project was developed with limited assistance from AI tools, primarily for structural guidance and documentation clarity.
+All core logic, design flow, and implementation decisions were created independently.
+<br>
+
+**Code Generation and Architecture:**
+1. AI assistance was used to understand ANTLR parse tree traversal concepts and explore possible implementation patterns.
+2. Code templates and structure suggestions were taken for mock plan generation, complexity scoring, and testing setup — but the logic, algorithm, and implementation were entirely self-designed.
+3. Minor support was used for syntax corrections and improving code readability.
+   <br>
+   
+**Documentation:**
+
+1. AI helped in drafting technical explanations and architectural documentation for better clarity.
+2. It also assisted in structuring the README and creating diagram outlines for visualization
+
 
 
 
