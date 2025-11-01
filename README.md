@@ -96,6 +96,9 @@ This structure makes the system easy to maintain, extend, and test independently
 | `Output.txt`              | Output log file                      | - Stores printed test outputs, normalized queries, plans, and cache performance metrics     |
 <br>
 
+**Note :**  SQL grammar (.g4) file taken from open source git hub.
+<br> 
+
 ***
 
 **End to End flow of Query**
